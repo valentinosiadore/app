@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/navbar";
 
 const urbanist = Urbanist({
   variable: "--font-geist-sans",
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body
         className={urbanist.className}
       >
+        <Navbar />
         {children}
       </body>
     </html>
