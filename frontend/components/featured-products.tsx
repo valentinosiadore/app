@@ -2,15 +2,18 @@
 "use client";
 
 import { useGetFeaturedProducts } from "@/api/useGetFeaturedProducts";
-import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 import SkeletonSchema from "./skeletonSchema";
 import { Card, CardContent } from "./ui/card";
 import React from "react";
 import { ProductType, ImageType } from "@/types/product";
 import { Expand, ShoppingCart } from "lucide-react";
+import IconButton from "./icon-button";
+import { useRouter } from "next/navigation";
 
 const FeaturedProducts = () => {
   const { result, loading } = useGetFeaturedProducts();
+  const router = useRouter();
 
   console.log(result);
   return (
@@ -26,6 +29,9 @@ const FeaturedProducts = () => {
             //PASO DE USAR ATTRIBUTES A USAR PRODUCT
             const productName = product.productName;
             const images = product.images;
+            const slug = product.category.slug || ""; // Aseguramos que slug sea un string
+            const taste = product.category.categoryName || "Sin sabor"; // Aseguramos que categoryName sea un string
+            const origin = product.origin || "Sin origen"; // Aseguramos que origin sea un string
 
             console.log("---Producto individual (Debugging) ---");
             console.log("Id del producto:", product.id);
@@ -62,12 +68,18 @@ const FeaturedProducts = () => {
                               alt={productName || "Image featured"} />
                               <div className="absolute w-full px-6 transition duration-200 opacity-0 group-hover:opacity-100 bottom-5">
                                 <div className="flex justify-center gap-x-6">
-                                  <Expand />
-                                  <ShoppingCart />
+                                  <IconButton onClick={() => router.push(`/product/${slug}`)} icon={<Expand size={20} />} className="text-gray-600" />
+                                  <IconButton onClick={() => console.log("Add item")} icon={<ShoppingCart size={20} />} className="text-gray-600" />
                                 </div>
                               </div>
                       </CardContent>
-
+                      <div className="flex justify-between gap-4 px-8">
+                        <h3 className="text-lg font-bold">{productName}</h3>
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="px-2 py-1 text-white bg-black rounded-full dark:bg-white dark:text-black w-fit">{taste}</p>
+                          <p className="px-2 py-1 text-white bg-yellow-900 rounded-full">{origin}</p>
+                        </div>
+                      </div>
                     </Card>
                   </div> 
 
@@ -76,6 +88,8 @@ const FeaturedProducts = () => {
             })
           }
         </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext className="hidden sm:flex" />
       </Carousel>
     </div>
   );
